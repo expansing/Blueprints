@@ -17,9 +17,8 @@ blueprint:
           options:
             - none
             - away
-            - eco
             - comfort
-            - boost
+            - sleep
     target_time:
       name: Target Time
       description: The time of day to change the thermostat preset mode.
