@@ -1,0 +1,41 @@
+blueprint:
+  name: Change Thermostat Preset Mode at Time
+  description: Change the preset mode of a thermostat at a specific time of the day.
+  domain: automation
+  input:
+    thermostat_entity:
+      name: Thermostat Entity
+      description: The entity ID of the thermostat to control.
+      selector:
+        entity:
+          domain: climate
+    target_preset_mode:
+      name: Target Preset Mode
+      description: The preset mode to set at the specified time.
+      selector:
+        select:
+          options:
+            - none
+            - away
+            - eco
+            - comfort
+            - boost
+    target_time:
+      name: Target Time
+      description: The time of day to change the thermostat preset mode.
+      selector:
+        time: {}
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  platform: time
+  at: !input target_time
+
+action:
+  service: climate.set_preset_mode
+  target:
+    entity_id: !input thermostat_entity
+  data:
+    preset_mode: !input target_preset_mode
