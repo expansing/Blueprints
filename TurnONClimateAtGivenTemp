@@ -1,40 +1,39 @@
 blueprint:
-  name: Change Thermostat Preset Mode at Time
-  description: Change the preset mode of a thermostat at a specific time of the day.
+  name: Turn Off Climate at High Temperature
+  description: Turn off a climate entity when the temperature exceeds a specified threshold.
   domain: automation
   input:
-    thermostat_entity:
-      name: Thermostat Entity
-      description: The entity ID of the thermostat to control.
+    climate_entity:
+      name: Climate Entity
+      description: The entity ID of the climate entity to control.
       selector:
         entity:
           domain: climate
-    target_preset_mode:
-      name: Target Preset Mode
-      description: The preset mode to set at the specified time.
+    temperature_sensor:
+      name: Temperature Sensor
+      description: The entity ID of the temperature sensor.
       selector:
-        select:
-          options:
-            - none
-            - away
-            - comfort
-            - sleep
-    target_time:
-      name: Target Time
-      description: The time of day to change the thermostat preset mode.
+        entity:
+          domain: sensor
+    high_temperature_threshold:
+      name: High Temperature Threshold
+      description: The temperature threshold above which the climate entity will be turned off.
+      default: 28
       selector:
-        time: {}
+        number:
+          min: -273.15  # Absolute zero in Celsius
+          max: 100  # Adjust as needed
+          unit_of_measurement: "°C"
 
-mode: restart
+mode: single
 max_exceeded: silent
 
 trigger:
-  platform: time
-  at: !input target_time
+  platform: numeric_state
+  entity_id: !input temperature_sensor
+  below: !input high_temperature_threshold
 
 action:
-  service: climate.set_preset_mode
+  service: climate.turn_on
   target:
-    entity_id: !input thermostat_entity
-  data:
-    preset_mode: !input target_preset_mode
+    entity_id: !input climate_entity
