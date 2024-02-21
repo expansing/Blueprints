@@ -1,6 +1,6 @@
 blueprint:
   name: Turn On Climate at Low Temperature
-  description: Turn off a climate entity when the temperature exceeds a specified threshold.
+  description: Turn on a climate entity when the temperature is below a specified threshold.
   domain: automation
   input:
     climate_entity:
@@ -15,14 +15,14 @@ blueprint:
       selector:
         entity:
           domain: sensor
-    high_temperature_threshold:
-      name: High Temperature Threshold
-      description: The temperature threshold above which the climate entity will be turned off.
-      default: 28
+    low_temperature_threshold:
+      name: Low Temperature Threshold
+      description: The temperature threshold below which the climate entity will be turned on.
+      default: 7
       selector:
         number:
-          min: -273.15  # Absolute zero in Celsius
-          max: 100  # Adjust as needed
+          min: -5  # Absolute zero in Celsius
+          max: 15  # Adjust as needed
           unit_of_measurement: "°C"
 
 mode: single
@@ -31,7 +31,7 @@ max_exceeded: silent
 trigger:
   platform: numeric_state
   entity_id: !input temperature_sensor
-  below: !input high_temperature_threshold
+  below: !input low_temperature_threshold
 
 action:
   service: climate.turn_on
