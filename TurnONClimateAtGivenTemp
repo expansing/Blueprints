@@ -1,5 +1,5 @@
 blueprint:
-  name: Turn Off Climate at High Temperature
+  name: Turn On Climate at Low Temperature
   description: Turn off a climate entity when the temperature exceeds a specified threshold.
   domain: automation
   input:
