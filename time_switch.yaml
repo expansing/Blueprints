@@ -1,0 +1,48 @@
+blueprint:
+  name: Time controlled switch activation
+  description: Turn switchs on and off based on time
+  domain: automation
+  input:
+    switch_target:
+      name: switch
+      selector:
+        target:
+          entity:
+            domain: switch
+    time_on:
+      name: "Time on"
+      default: "07:00:00"
+      selector:
+        time:
+    time_off:
+      name: "Time off"
+      default: "17:00:00"
+      selector:
+        time:
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: time
+    at: !input time_on
+  - platform: time
+    at: !input time_off
+
+action:
+  - choose:
+      - conditions:
+          - condition: time
+            after: !input time_off
+            before: !input time_on
+        sequence:
+          - service: switch.turn_off
+            target: !input switch_target
+      - conditions:
+          - condition: time
+            after: !input time_on
+            before: !input time_off
+        sequence:
+          - service: switch.turn_on
+            target: !input switch_target
+    default: []
